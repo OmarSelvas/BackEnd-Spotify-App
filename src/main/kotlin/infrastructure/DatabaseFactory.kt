@@ -15,7 +15,7 @@ object DatabaseFactory {
             jdbcUrl = System.getenv("DATABASE_URL")
                 ?: "jdbc:postgresql://localhost:5432/music_db"
             username = System.getenv("DATABASE_USER") ?: "postgres"
-            password = System.getenv("DATABASE_PASSWORD") ?: "postgres"
+            password = System.getenv("DATABASE_PASSWORD") ?: "omar"
             maximumPoolSize = 10
             isAutoCommit = false
             transactionIsolation = "TRANSACTION_REPEATABLE_READ"
