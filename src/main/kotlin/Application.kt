@@ -1,5 +1,7 @@
 package com.example
 
+import com.example.infrastructure.DatabaseFactory
+import com.example.infrastructure.plugins.*
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
@@ -7,7 +9,15 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
-    configureSecurity()
+    // Inicializar base de datos
+    DatabaseFactory.init()
+
+    // Configurar plugins
+    configureDI()
     configureSerialization()
-    configureRouting()
+    configureStatusPages()
+    configureApiRouting()
+
+    // Log de inicio
+    environment.log.info("Music API - Ktor con Arquitectura Hexagonal wuuuuu ")
 }
