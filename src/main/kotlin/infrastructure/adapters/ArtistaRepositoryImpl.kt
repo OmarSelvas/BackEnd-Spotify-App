@@ -6,23 +6,23 @@ import com.example.infrastructure.schemas.ArtistasTable
 import com.example.infrastructure.schemas.AlbumesTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.time.Instant
 import java.util.UUID
 
 class ArtistaRepositoryImpl : ArtistaRepository {
 
-    override suspend fun getAll(): List<Artista> = transaction {
+    override suspend fun getAll(): List<Artista> = newSuspendedTransaction {
         ArtistasTable.selectAll().map { toArtista(it) }
     }
 
-    override suspend fun getById(id: String): Artista? = transaction {
+    override suspend fun getById(id: String): Artista? = newSuspendedTransaction {
         ArtistasTable.select { ArtistasTable.id eq UUID.fromString(id) }
             .mapNotNull { toArtista(it) }
             .singleOrNull()
     }
 
-    override suspend fun create(request: CreateArtistaRequest): Artista = transaction {
+    override suspend fun create(request: CreateArtistaRequest): Artista = newSuspendedTransaction {
         val newId = ArtistasTable.insert {
             it[name] = request.name
             it[genre] = request.genre
@@ -37,7 +37,7 @@ class ArtistaRepositoryImpl : ArtistaRepository {
         )
     }
 
-    override suspend fun update(id: String, request: UpdateArtistaRequest): Artista? = transaction {
+    override suspend fun update(id: String, request: UpdateArtistaRequest): Artista? = newSuspendedTransaction {
         val uuid = UUID.fromString(id)
         val updated = ArtistasTable.update({ ArtistasTable.id eq uuid }) {
             request.name?.let { name -> it[ArtistasTable.name] = name }
@@ -45,15 +45,22 @@ class ArtistaRepositoryImpl : ArtistaRepository {
             it[updatedAt] = Instant.now()
         }
 
-        if (updated > 0) getById(id) else null
+        if (updated > 0) {
+            ArtistasTable.select { ArtistasTable.id eq uuid }
+                .mapNotNull { toArtista(it) }
+                .singleOrNull()
+        } else null
     }
 
-    override suspend fun delete(id: String): Boolean = transaction {
+    override suspend fun delete(id: String): Boolean = newSuspendedTransaction {
         ArtistasTable.deleteWhere { ArtistasTable.id eq UUID.fromString(id) } > 0
     }
 
-    override suspend fun getWithAlbums(id: String): ArtistaWithAlbums? = transaction {
-        val artista = getById(id) ?: return@transaction null
+    override suspend fun getWithAlbums(id: String): ArtistaWithAlbums? = newSuspendedTransaction {
+        val artistaRow = ArtistasTable.select { ArtistasTable.id eq UUID.fromString(id) }
+            .singleOrNull() ?: return@newSuspendedTransaction null
+
+        val artista = toArtista(artistaRow)
 
         val albums = (ArtistasTable innerJoin AlbumesTable)
             .select { ArtistasTable.id eq UUID.fromString(id) }
