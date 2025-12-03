@@ -18,21 +18,23 @@ fun Application.configureRouting() {
         get("/") {
             call.respond(
                 HttpStatusCode.OK,
-                mapOf("message" to "API Spotify - CRUD completo",
+                mapOf(
+                    "message" to "API Spotify - CRUD completo",
                     "version" to "1.0.0",
-                    "docs" to "/artistas, /albums, /tracks"
+                    "endpoints" to mapOf(
+                        "artistas" to "/artistas",
+                        "albums" to "/albums",
+                        "tracks" to "/tracks"
+                    )
                 )
             )
         }
 
         // Ruta de salud
-        get("/estado") {
+        get("/health") {
             call.respond(
                 HttpStatusCode.OK,
-                mapOf((
-                        "status" to "OK"),
-                    "message" to "API esta corriendo",
-                    "credits" to "gracias a papdio funciona")
+                mapOf("OK" to "señal" to "API esta corriendo" to "gracias a papdio funciona")
             )
         }
 
