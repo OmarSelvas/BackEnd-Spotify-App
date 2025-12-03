@@ -34,7 +34,7 @@ fun Application.configureRouting() {
         get("/health") {
             call.respond(
                 HttpStatusCode.OK,
-                mapOf("status" to "OK", "message" to "API is running")
+                mapOf("OK" to "señal" to "API esta corriendo" to "gracias a papdio funciona")
             )
         }
 

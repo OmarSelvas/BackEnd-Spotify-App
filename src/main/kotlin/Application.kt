@@ -13,22 +13,17 @@ fun main(args: Array<String>) {
 fun Application.module() {
     // Configurar CORS
     configureCORS()
-
     // Configurar manejo de errores
     configureStatusPages()
-
     // Configurar Koin para inyección de dependencias
     install(Koin) {
         slf4jLogger()
         modules(appModule)
     }
-
     // Inicializar base de datos
     DatabaseFactory.init()
-
     // Configurar serialización JSON
     configureSerialization()
-
     // Configurar rutas
     configureRouting()
 }
