@@ -9,7 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.albumRoutes(service: AlbumService) {
-    route("/albums") {
+    route("/albumes") {
 
         // CREATE - Crear álbum
         post {
@@ -37,11 +37,7 @@ fun Route.albumRoutes(service: AlbumService) {
                 result.onSuccess { album ->
                     call.respond(
                         HttpStatusCode.Created,
-                        ApiResponse(
-                            success = true,
-                            message = "Álbum creado exitosamente",
-                            data = album
-                        )
+                        album
                     )
                 }.onFailure { error ->
                     call.respond(

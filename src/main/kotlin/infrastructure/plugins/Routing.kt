@@ -14,6 +14,7 @@ fun Application.configureRouting() {
     val trackService by inject<TrackService>()
 
     routing {
+
         // Ruta de bienvenida
         get("/") {
             call.respond(
@@ -29,7 +30,6 @@ fun Application.configureRouting() {
                 )
             )
         }
-
         // Ruta de salud
         get("/health") {
             call.respond(
@@ -38,9 +38,12 @@ fun Application.configureRouting() {
             )
         }
 
-        // Registrar rutas de cada entidad
-        artistaRoutes(artistaService)
-        albumRoutes(albumService)
-        trackRoutes(trackService)
+        // Agregamos el bloque /api necesario para Postman
+        route("/api") {
+            // Registrar rutas de cada entidad
+            artistaRoutes(artistaService)
+            albumRoutes(albumService)
+            trackRoutes(trackService)
+        }
     }
 }

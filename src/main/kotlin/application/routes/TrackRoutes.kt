@@ -37,11 +37,7 @@ fun Route.trackRoutes(service: TrackService) {
                 result.onSuccess { track ->
                     call.respond(
                         HttpStatusCode.Created,
-                        ApiResponse(
-                            success = true,
-                            message = "Canción creada exitosamente",
-                            data = track
-                        )
+                        track
                     )
                 }.onFailure { error ->
                     call.respond(

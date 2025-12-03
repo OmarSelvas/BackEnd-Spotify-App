@@ -27,12 +27,9 @@ fun Route.artistaRoutes(service: ArtistaService) {
                 val artista = service.createArtista(request)
                 call.respond(
                     HttpStatusCode.Created,
-                    ApiResponse(
-                        success = true,
-                        message = "Artista creado exitosamente",
-                        data = artista
-                    )
+                    artista
                 )
+
             } catch (e: Exception) {
                 call.application.environment.log.error("Error al crear artista", e)
                 call.respond(
