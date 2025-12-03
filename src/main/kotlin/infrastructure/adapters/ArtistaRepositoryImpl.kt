@@ -6,6 +6,7 @@ import com.example.infrastructure.DatabaseFactory.dbQuery
 import com.example.infrastructure.schemas.AlbumesTable
 import com.example.infrastructure.schemas.ArtistasTable
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.time.Instant
 import java.util.UUID
 

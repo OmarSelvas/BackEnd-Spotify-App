@@ -7,11 +7,8 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.koin.ktor.ext.inject
 
-fun Route.trackRoutes() {
-    val service by inject<TrackService>()
-
+fun Route.trackRoutes(service: TrackService) {
     route("/tracks") {
 
         // CREATE - Crear track
@@ -53,6 +50,7 @@ fun Route.trackRoutes() {
                     )
                 }
             } catch (e: Exception) {
+                call.application.environment.log.error("Error al crear canción", e)
                 call.respond(
                     HttpStatusCode.InternalServerError,
                     ErrorResponse(

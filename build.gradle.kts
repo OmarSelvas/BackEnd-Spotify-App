@@ -30,6 +30,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json")
     implementation("io.ktor:ktor-server-status-pages")
     implementation("io.ktor:ktor-server-config-yaml")
+    implementation("io.ktor:ktor-server-cors") // AGREGADO PARA CORS
 
     // Database
     implementation("org.postgresql:postgresql:42.7.1")

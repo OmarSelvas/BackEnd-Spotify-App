@@ -7,11 +7,8 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.koin.ktor.ext.inject
 
-fun Route.artistaRoutes() {
-    val service by inject<ArtistaService>()
-
+fun Route.artistaRoutes(service: ArtistaService) {
     route("/artistas") {
 
         // CREATE - Crear artista
@@ -37,6 +34,7 @@ fun Route.artistaRoutes() {
                     )
                 )
             } catch (e: Exception) {
+                call.application.environment.log.error("Error al crear artista", e)
                 call.respond(
                     HttpStatusCode.InternalServerError,
                     ErrorResponse(

@@ -11,6 +11,12 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    // Configurar CORS
+    configureCORS()
+
+    // Configurar manejo de errores
+    configureStatusPages()
+
     // Configurar Koin para inyección de dependencias
     install(Koin) {
         slf4jLogger()

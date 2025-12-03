@@ -13,9 +13,11 @@ object DatabaseFactory {
 
     fun init() {
         val driverClassName = "org.postgresql.Driver"
-        val jdbcURL = System.getenv("DATABASE_URL") ?: "jdbc:postgresql://localhost:5432/music_db"
-        val dbUser = System.getenv("DATABASE_USER") ?: "postgres"
-        val dbPassword = System.getenv("DATABASE_PASSWORD") ?: "omar"
+        val jdbcURL = "jdbc:postgresql://localhost:5432/music_db"
+        val dbUser = "postgres"
+        val dbPassword = "omar"
+
+        println("🔌 Conectando a base de datos: $jdbcURL")
 
         val config = HikariConfig().apply {
             this.driverClassName = driverClassName
@@ -28,12 +30,31 @@ object DatabaseFactory {
             validate()
         }
 
-        val dataSource = HikariDataSource(config)
-        Database.connect(dataSource)
+        try {
+            val dataSource = HikariDataSource(config)
+            Database.connect(dataSource)
 
-        // Crear tablas si no existen
-        transaction {
-            SchemaUtils.create(ArtistasTable, AlbumesTable, TracksTable)
+            println("✅ Conexión a base de datos establecida")
+
+            // Verificar y crear extensión UUID
+            transaction {
+                try {
+                    exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
+                    println("✅ Extensión uuid-ossp habilitada")
+                } catch (e: Exception) {
+                    println("⚠️ La extensión uuid-ossp ya existe o no es necesaria")
+                }
+
+                // Crear tablas si no existen
+                SchemaUtils.createMissingTablesAndColumns(ArtistasTable, AlbumesTable, TracksTable)
+                println("✅ Tablas verificadas/creadas correctamente")
+            }
+
+            println("✅ Base de datos inicializada correctamente")
+        } catch (e: Exception) {
+            println("❌ Error al conectar con la base de datos: ${e.message}")
+            e.printStackTrace()
+            throw e
         }
     }
 

@@ -7,11 +7,8 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.koin.ktor.ext.inject
 
-fun Route.albumRoutes() {
-    val service by inject<AlbumService>()
-
+fun Route.albumRoutes(service: AlbumService) {
     route("/albums") {
 
         // CREATE - Crear álbum
@@ -53,6 +50,7 @@ fun Route.albumRoutes() {
                     )
                 }
             } catch (e: Exception) {
+                call.application.environment.log.error("Error al crear álbum", e)
                 call.respond(
                     HttpStatusCode.InternalServerError,
                     ErrorResponse(
